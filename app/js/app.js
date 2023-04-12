@@ -4,16 +4,28 @@ import { OrbitControls } from "https://unpkg.com/three@0.122.0/examples/jsm/cont
 var camera, scene, renderer, controls
 var levelCounter = document.querySelector("#levelCounter")
 
-// math algo credits to Wyatt Newberry
 
+const geometryCache = new Map();
+const sierpinskiCache = new Map();
+
+// initial math algo without memoization credits to Wyatt Newberry
 function half(p1, p2) {
     var hp = new THREE.Vector3(0, 0, 0).addVectors(p1, p2);
     hp.divideScalar(2);
     return hp;
 }
+
 var sin_PI_3 = Math.sin(Math.PI / 3);
 function build(level, side, v0, geometry) {
     if (geometry == null) geometry = new THREE.Geometry();
+
+    const cacheKey = `${level}-${side}-${v0.x}-${v0.y}-${v0.z}`;
+
+    // Check if the result is already in the cache
+    if (geometryCache.has(cacheKey)) {
+        return geometryCache.get(cacheKey);
+    }
+
     var v1 = new THREE.Vector3().copy(v0);
     v1.x += side;
     var v2 = new THREE.Vector3().copy(v0);
@@ -45,6 +57,9 @@ function build(level, side, v0, geometry) {
         var v03 = half(v0, v3);
         build(level - 1, hside, v03, geometry);
     }
+
+    // Store the result in the cache
+    geometryCache.set(cacheKey, geometry);
     return geometry;
 }
 
@@ -63,14 +78,13 @@ function sierpinski(level, side) {
     return mesh;
 }
 
-const cache = new Map()
 function memoized(level, side) {
     const key = `${level}:${side}`;
-    if (cache.has(key)) {
-        return cache.get(key)
+    if (sierpinskiCache.has(key)) {
+        return sierpinskiCache.get(key);
     }
-    const result = sierpinski(level, side)
-    cache.set(key, result);
+    const result = sierpinski(level, side);
+    sierpinskiCache.set(key, result);
     return result;
 }
 
