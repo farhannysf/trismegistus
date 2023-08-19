@@ -126,6 +126,9 @@ function initialize() {
 
     trismegistus = memoized(level, side);
     scene.add(trismegistus);
+    var axis = new THREE.Vector3(0, 1, 0);
+    var angle = 60 * (Math.PI / 180);
+    trismegistus.quaternion.setFromAxisAngle(axis, angle);
     camera.lookAt(trismegistus.position);
 
     const canvas = document.querySelector('#canvas');
