@@ -108,6 +108,13 @@ var trismegistus
 initialize();
 animate();
 
+function setTrismegistus(scene, trismegistus) {
+    scene.add(trismegistus);
+    var axis = new THREE.Vector3(0, 1, 0);
+    var angle = 60 * (Math.PI / 180);
+    trismegistus.quaternion.setFromAxisAngle(axis, angle);
+}
+
 function initialize() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, -100);
     camera.position.x = 0;
@@ -125,11 +132,7 @@ function initialize() {
     scene.add(topLight);
 
     trismegistus = memoized(level, side);
-    scene.add(trismegistus);
-    var axis = new THREE.Vector3(0, 1, 0);
-    var angle = 60 * (Math.PI / 180);
-    trismegistus.quaternion.setFromAxisAngle(axis, angle);
-    camera.lookAt(trismegistus.position);
+    setTrismegistus(scene, trismegistus)
 
     const canvas = document.querySelector('#canvas');
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -170,7 +173,7 @@ function incLev() {
     scene.remove(trismegistus);
     level += 1;
     trismegistus = memoized(level, side);
-    scene.add(trismegistus);
+    setTrismegistus(scene, trismegistus);
     levelCounter.innerHTML = level - 1
 }
 
@@ -179,7 +182,7 @@ function decLev() {
         scene.remove(trismegistus);
         level -= 1;
         trismegistus = memoized(level, side);
-        scene.add(trismegistus);
+        setTrismegistus(scene, trismegistus);
         levelCounter.innerHTML = level - 1
     }
     else {
