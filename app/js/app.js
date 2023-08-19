@@ -68,6 +68,7 @@ const tMaterial = {
     metalness: 1.0,
     roughness: 0.5,
     color: 0xaa8844,
+    wireframe: true,
 };
 
 function sierpinski(level, side) {
@@ -109,9 +110,9 @@ animate();
 
 function initialize() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, -100);
-    camera.position.x = 800;
-    camera.position.y = 800;
-    camera.position.z = 800;
+    camera.position.x = 0;
+    camera.position.y = 1200;
+    camera.position.z = 0;
 
     scene = new THREE.Scene();
 
@@ -125,6 +126,7 @@ function initialize() {
 
     trismegistus = memoized(level, side);
     scene.add(trismegistus);
+    camera.lookAt(trismegistus.position);
 
     const canvas = document.querySelector('#canvas');
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
